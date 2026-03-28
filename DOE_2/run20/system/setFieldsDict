@@ -1,0 +1,79 @@
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      setFieldsDict;
+}
+
+defaultFieldValues
+(
+    volScalarFieldValue alpha.air           1
+    volScalarFieldValue alpha.water         0
+    volScalarFieldValue alpha.contactFluid  0
+
+    volScalarFieldValue h.air               -1.005e5 // T = 173,15 K
+    volScalarFieldValue h.water             0
+    volScalarFieldValue h.contactFluid      0
+
+    volVectorFieldValue U (0 0 0)
+);
+
+regions
+(
+
+    boxToCell
+    {
+        box (-0.015 -0.5 0)
+            (0.015 0.5 0.002);
+
+        fieldValues
+        (
+            volScalarFieldValue alpha.contactFluid  1
+            volScalarFieldValue alpha.water         0
+            volScalarFieldValue alpha.air           0
+
+            volScalarFieldValue h.contactFluid      -122000    //T = 173,15 K
+            volScalarFieldValue h.air               0
+            volScalarFieldValue h.water             0
+        );
+    }
+
+
+    sphereToCell
+    {
+        centre (0 0 0.002);
+        radius 0.002;
+
+        fieldValues
+        (
+            volScalarFieldValue alpha.water         1
+            volScalarFieldValue alpha.air           0
+            volScalarFieldValue alpha.contactFluid  0
+
+            volScalarFieldValue h.water             7000              // T = 275,15 K
+            volScalarFieldValue h.air               0
+            volScalarFieldValue h.contactFluid      0
+        );
+    }
+    boxToCell
+    {
+        box (-0.015 -0.5 0)
+            (0.015 0.5 0.002);
+
+        fieldValues
+        (
+            volScalarFieldValue alpha.water         0
+            volScalarFieldValue alpha.contactFluid  1
+            volScalarFieldValue alpha.air           0
+
+            volScalarFieldValue h.contactFluid      -122000         //T = 173,15 K
+            volScalarFieldValue h.air               0
+            volScalarFieldValue h.water             0
+        );
+    }
+
+
+);
+
+

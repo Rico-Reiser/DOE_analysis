@@ -1,0 +1,77 @@
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    object      fvSchemes;
+}
+
+ddtSchemes
+{
+    // default         backward;
+    default         Euler;
+}
+
+gradSchemes
+{
+    default         Gauss linear;
+    grad(p_rgh)     Gauss linear;
+    grad(pcorr)     Gauss linear;
+}
+
+divSchemes
+{
+    // --------------------------------------------------
+    // Momentum
+    // --------------------------------------------------
+    div(phi,U)              Gauss linearUpwind grad(U);
+    div(rhoPhi,U)           Gauss linearUpwind grad(U);
+
+    // --------------------------------------------------
+    // Volume fractions (VOF)
+    // --------------------------------------------------
+    div(phi,alpha)          Gauss vanLeer;
+    div(phirb,alpha)        Gauss linear;
+
+    // --------------------------------------------------
+    // Enthalpy (phasenspezifisch, Option C)
+    // EXPLIZIT für alle verwendeten Flüsse
+    // --------------------------------------------------
+    div(rhoPhiA,h.air)          Gauss upwind;
+    div(rhoPhiW,h.water)        Gauss upwind;
+    div(rhoPhiC,h.contactFluid) Gauss upwind;
+
+    // --------------------------------------------------
+    // Viscous stress
+    // --------------------------------------------------
+    div((nuEff*dev2(T(grad(U)))))           Gauss linear;
+    div(((rho*nuEff)*dev2(T(grad(U)))))     Gauss linear;
+}
+
+
+
+laplacianSchemes
+{
+    // --------------------------------------------------
+    // DEFAULT
+    // --------------------------------------------------
+    default                 Gauss linear corrected;
+    laplacian(rAUf,p_rgh)   Gauss linear corrected;
+
+    laplacian(h.air)            Gauss harmonic corrected;
+    laplacian(h.water)          Gauss harmonic corrected;
+    laplacian(h.contactFluid)   Gauss harmonic corrected;
+
+    // laplacian(h)            Gauss linear corrected;
+}
+
+interpolationSchemes
+{
+    default             linear;
+    interpolate(rho)    linear;
+    interpolate(nuEff)  linear;
+}
+
+snGradSchemes
+{
+    default         corrected;
+}
