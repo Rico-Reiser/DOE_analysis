@@ -67,75 +67,120 @@ case $i in
 esac
 
     # =========================================
-    # transportProperties
+    # transportProperties (OK)
     # =========================================
-    awk \
-        -v rhoW="$rhoW" -v nuW="$nuW" \
+    awk -v rhoW="$rhoW" -v nuW="$nuW" \
         -v rhoA="$rhoA" -v nuA="$nuA" \
         -v rhoCF="$rhoCF" -v nuCF="$nuCF" '
-        BEGIN { block="" }
-        /^[[:space:]]*water[[:space:]]*$/        { block="water"; print; next }
-        /^[[:space:]]*air[[:space:]]*$/          { block="air"; print; next }
-        /^[[:space:]]*contactFluid[[:space:]]*$/ { block="contactFluid"; print; next }
+    BEGIN { block="" }
 
-        block=="water" && /^[[:space:]]*rho/ { sub(/[0-9.eE+-]+/, rhoW); print; next }
-        block=="water" && /^[[:space:]]*nu/  { sub(/[0-9.eE+-]+/, nuW);  print; next }
+    /^[[:space:]]*water[[:space:]]*$/        { block="water"; print; next }
+    /^[[:space:]]*air[[:space:]]*$/          { block="air"; print; next }
+    /^[[:space:]]*contactFluid[[:space:]]*$/ { block="contactFluid"; print; next }
 
-        block=="air" && /^[[:space:]]*rho/ { sub(/[0-9.eE+-]+/, rhoA); print; next }
-        block=="air" && /^[[:space:]]*nu/  { sub(/[0-9.eE+-]+/, nuA);  print; next }
+    block=="water" && /^[[:space:]]*rho/ { print "    rho             " rhoW ";"; next }
+    block=="water" && /^[[:space:]]*nu/  { print "    nu              " nuW ";";  next }
 
-        block=="contactFluid" && /^[[:space:]]*rho/ { sub(/[0-9.eE+-]+/, rhoCF); print; next }
-        block=="contactFluid" && /^[[:space:]]*nu/  { sub(/[0-9.eE+-]+/, nuCF);  print; next }
+    block=="air" && /^[[:space:]]*rho/ { print "    rho             " rhoA ";"; next }
+    block=="air" && /^[[:space:]]*nu/  { print "    nu              " nuA ";";  next }
 
-        /^[[:space:]]*}/ { print; block=""; next }
-        { print }
-    ' "$d/constant/transportProperties" > "$d/constant/tmp" && mv "$d/constant/tmp" "$d/constant/transportProperties"
+    block=="contactFluid" && /^[[:space:]]*rho/ { print "    rho             " rhoCF ";"; next }
+    block=="contactFluid" && /^[[:space:]]*nu/  { print "    nu              " nuCF ";";  next }
 
+    /^[[:space:]]*}/ { block=""; print; next }
+    { print }
+    ' "$d/constant/transportProperties" > "$d/constant/tmp" \
+    && mv "$d/constant/tmp" "$d/constant/transportProperties"
+
+    # =========================================
+    #  physicalProperties.contactFluid
+    # =========================================
+    # =========================================
+#  physicalProperties.contactFluid
+# =========================================
+
+cd ~/DOE/DOE_2 || exit 1
+
+for i in $(seq 1 32); do
+    d="run$i"
+
+    echo ">>> fixing $d"
+
+    # ==============================
+    # DOE Werte
+    # ==============================
+    case $i in
+        # niedrige ν
+        1|3|5|7|9|11|13|15)   nuCF=2.85714e-6 ;;
+        2|4|6|8|10|12|14|16) nuCF=2.22222e-6 ;;
+
+        # hohe ν
+        17|19|21|23|25|27|29|31) nuCF=4.28571e-5 ;;
+        18|20|22|24|26|28|30|32) nuCF=3.33333e-5 ;;
+    esac
+
+    case $i in
+        # rho = -1
+        1|3|5|7|9|11|13|15|17|19|21|23|25|27|29|31)
+            rhoCF=1430 ;;
+
+        # rho = +1
+        2|4|6|8|10|12|14|16|18|20|22|24|26|28|30|32)
+            rhoCF=1781 ;;
+    esac
+
+    # ==============================
+    # physicalProperties fix
+    # ==============================
+    awk -v nuCF="$nuCF" -v rhoCF="$rhoCF" '
+    /^[[:space:]]*rho[[:space:]]/ {
+        print "    rho     [1 -3 0 0 0 0 0] " rhoCF ";"
+        next
+    }
+    /^[[:space:]]*nu[[:space:]]/ {
+        print "    nu      [0 2 -1 0 0 0 0] " nuCF ";"
+        next
+    }
+    { print }
+    ' "$d/constant/physicalProperties.contactFluid" > "$d/tmp" \
+    && mv "$d/tmp" "$d/constant/physicalProperties.contactFluid"
+
+done
     # =========================================
     # solidificationProperties
     # =========================================
-    awk \
-        -v rhoCF="$rhoCF" -v cpCF="$cpCF" -v lambdaCF="$lambdaCF" '
-        BEGIN { block="" }
-        /^[[:space:]]*contactFluid/ { block="contactFluid"; print; next }
+    awk -v rhoCF="$rhoCF" -v cpCF="$cpCF" -v lambdaCF="$lambdaCF" '
+    BEGIN { block="" }
+    /^[[:space:]]*contactFluid/ { block="contactFluid"; print; next }
 
-        block=="contactFluid" && /^[[:space:]]*rho/    { sub(/[0-9.eE+-]+/, rhoCF); print; next }
-        block=="contactFluid" && /^[[:space:]]*cp/     { sub(/[0-9.eE+-]+/, cpCF);  print; next }
-        block=="contactFluid" && /^[[:space:]]*lambda/ { sub(/[0-9.eE+-]+/, lambdaCF); print; next }
+    block=="contactFluid" && /^[[:space:]]*rho/    { sub(/[0-9.eE+-]+/, rhoCF); print; next }
+    block=="contactFluid" && /^[[:space:]]*cp/     { sub(/[0-9.eE+-]+/, cpCF);  print; next }
+    block=="contactFluid" && /^[[:space:]]*lambda/ { sub(/[0-9.eE+-]+/, lambdaCF); print; next }
 
-        /^[[:space:]]*}/ { print; block=""; next }
-        { print }
-    ' "$d/constant/solidificationProperties" > "$d/constant/tmp" && mv "$d/constant/tmp" "$d/constant/solidificationProperties"
+    /^[[:space:]]*}/ { print; block=""; next }
+    { print }
+    ' "$d/constant/solidificationProperties" > "$d/constant/tmp" \
+    && mv "$d/constant/tmp" "$d/constant/solidificationProperties"
 
     # =========================================
     # phaseProperties
     # =========================================
-awk -v sigmaWC="$sigmaWC" '
-{
-    line = $0
-
-    # match beide Varianten: (water contactFluid) oder (contactFluid water)
-    if (match(line, /\([[:space:]]*(water[[:space:]]+contactFluid|contactFluid[[:space:]]+water)[[:space:]]*\)/)) {
-
-        pos = RSTART + RLENGTH   # Position NACH ")"
-
-        prefix = substr(line, 1, pos)
-        rest   = substr(line, pos)
-
-        # entferne alte Zahl am Anfang von rest
-        sub(/^[[:space:]]*[0-9.eE+-]+/, "", rest)
-
-        # baue neu zusammen
-        print prefix " " sigmaWC rest
-        next
+    awk -v sigmaWC="$sigmaWC" '
+    {
+        if (match($0, /\([[:space:]]*(water[[:space:]]+contactFluid|contactFluid[[:space:]]+water)[[:space:]]*\)/)) {
+            prefix = substr($0, 1, RSTART+RLENGTH)
+            rest   = substr($0, RSTART+RLENGTH)
+            sub(/^[[:space:]]*[0-9.eE+-]+/, "", rest)
+            print prefix " " sigmaWC rest
+            next
+        }
+        print
     }
+    ' "$d/constant/phaseProperties" > "$d/constant/tmp" \
+    && mv "$d/constant/tmp" "$d/constant/phaseProperties"
 
-    print
-}
-' "$d/constant/phaseProperties" > "$d/constant/tmp" \
-&& mv "$d/constant/tmp" "$d/constant/phaseProperties"
     # =========================================
-    # setFieldsDict (NEU)
+    # setFieldsDict
     # =========================================
     sed -i "
 /fieldValues/,/);/ {
@@ -144,4 +189,5 @@ awk -v sigmaWC="$sigmaWC" '
     }
 }
 " "$d/system/setFieldsDict"
+
 done
