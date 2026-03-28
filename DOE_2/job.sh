@@ -61,13 +61,11 @@ if [ ! -d "processor0" ]; then
 fi
 
 # ==============================
-# Solver (WICHTIG FIX)
+# Solver (ORIGINAL mit srun)
 # ==============================
 
 echo ">>> solver (parallel)"
-
-# 👉 robuster als srun (vermeidet PMIx/MUNGE Probleme)
-mpirun -np $SLURM_NTASKS freezeFoam4 -parallel > log.run 2>&1
+srun freezeFoam4 -parallel > log.run 2>&1
 
 # ==============================
 # Rekonstruktion
@@ -81,7 +79,7 @@ touch case.foam
 echo ">>> Simulation finished"
 
 # ==============================
-# ZIP (SICHER)
+# ZIP-KOMPRIMIERUNG
 # ==============================
 
 echo ">>> Compressing results..."
@@ -93,25 +91,19 @@ ZIP_NAME="run${RUN_ID}.zip"
 rm -f "$ZIP_NAME"
 
 if [ ! -d "run${RUN_ID}" ]; then
-    echo ">>> ERROR: run${RUN_ID} not found"
+    echo ">>> error: run${RUN_ID} not found for zip"
     exit 1
 fi
 
 zip -r -1 -q "$ZIP_NAME" "run${RUN_ID}"
 
-# 👉 prüfen ob ZIP erfolgreich
-if [ ! -f "$ZIP_NAME" ]; then
-    echo ">>> ERROR: ZIP failed"
-    exit 1
-fi
-
 echo ">>> ZIP created: $ZIP_NAME"
 
 # ==============================
-# OPTIONAL DELETE (JETZT SICHER)
+# OPTIONAL: Speicher sparen
 # ==============================
 
 rm -rf "$CASE_DIR"
-echo ">>> Original case deleted"
+echo ">>> Original case deleted (only ZIP remains)"
 
 date
