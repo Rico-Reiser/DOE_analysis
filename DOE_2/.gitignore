@@ -1,0 +1,13 @@
+processor*
+[0-9]*
+!0/
+!0_orig/
+
+log.*
+*.foam
+postProcessing/
+dynamicCode/
+constant/polyMesh/
+
+*.out
+*.err

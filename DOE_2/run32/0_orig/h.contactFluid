@@ -1,0 +1,72 @@
+FoamFile
+{
+    format      ascii;
+    class       volScalarField;
+    location    "0";
+    object      h.contactFluid;
+}
+
+dimensions      [0 2 -2 0 0 0 0];
+
+internalField   uniform 0;
+
+boundaryField
+{
+bottom
+{
+    type            codedFixedValue;
+    name            bottomH_contactFluid;
+    value           uniform 0;
+
+    code
+    #{
+        const fvPatch& patch = this->patch();
+        const fvMesh&  mesh  = patch.boundaryMesh().mesh();
+
+        scalarField& hPatch = *this;
+
+        const scalar Twall = 173.15;     // Wandtemperatur
+
+        // solidificationProperties laden
+        IOdictionary solidProps
+        (
+            IOobject
+            (
+                "solidificationProperties",
+                "constant",
+                mesh,
+                IOobject::MUST_READ,
+                IOobject::NO_WRITE
+            )
+        );
+
+        const scalar Tref = readScalar(solidProps.lookup("Tref"));
+
+        
+        const dictionary& cfDict = solidProps.subDict("contactFluid");
+
+       
+        const scalar cpCF = readScalar(cfDict.lookup("cp"));
+
+        forAll(hPatch, faceI)
+        {
+            hPatch[faceI] = cpCF * (Twall - Tref);
+        }
+    #};
+}
+
+    top
+    {
+        type            zeroGradient;
+    }
+    left
+    {
+        type            zeroGradient;
+    }
+    right
+    {
+        type            zeroGradient;  
+    }
+    front  { type empty; }
+    back   { type empty; }
+}
