@@ -1,0 +1,71 @@
+FoamFile
+{
+    format      ascii;
+    class       volScalarField;
+    location    "0";
+    object      h.water;
+}
+
+dimensions      [0 2 -2 0 0 0 0];
+
+internalField   uniform 0;
+
+boundaryField
+{
+     bottom
+{
+    type            codedFixedValue;
+    name            bottomH_water;
+    value           uniform 0;
+
+    code
+    #{
+        const fvPatch& patch = this->patch();
+        const fvMesh&  mesh  = patch.boundaryMesh().mesh();
+
+        scalarField& hPatch = *this;
+
+        const scalar Twall = 253.45;     // Wandtemperatur
+        const scalar cpRef = 2000.0;     // konstantes cp (z.B. cpLiquid)
+
+        // Tref direkt aus solidificationProperties lesen
+        IOdictionary solidProps
+        (
+            IOobject
+            (
+                "solidificationProperties",
+                "constant",
+                mesh,
+                IOobject::MUST_READ,
+                IOobject::NO_WRITE
+            )
+        );
+
+        const scalar Tref = readScalar(solidProps.lookup("Tref"));
+
+        forAll(hPatch, faceI)
+        {
+            hPatch[faceI] = cpRef*(Twall - Tref);
+        }
+    #};
+}
+
+    top
+    {
+        type zeroGradient;
+    }
+
+    left
+    {
+        type zeroGradient;
+    }
+
+    right
+    {
+        type zeroGradient;  
+    }
+
+    front { type empty; }
+
+    back  { type empty; }
+}

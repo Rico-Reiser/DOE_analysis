@@ -1,0 +1,40 @@
+FoamFile
+{
+    format      ascii;
+    class       volScalarField;
+    location    "0";
+    object      alpha.air;
+}
+
+dimensions      [0 0 0 0 0 0 0];
+
+internalField   uniform 1;
+
+boundaryField
+{
+    bottom
+    {
+        type alphaContactAngle;
+
+        contactAngleProperties
+        {
+            water
+            {
+                theta0 70;
+            }
+
+            contactFluid
+            {
+                theta0 90;
+            }
+        }
+
+        value uniform 0;
+    }
+
+    top    { type zeroGradient; }
+    left   { type zeroGradient; }
+    right  { type zeroGradient; }
+    front  { type empty; }
+    back   { type empty; }
+}

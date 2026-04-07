@@ -1,0 +1,64 @@
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      setFieldsDict;
+}
+
+defaultFieldValues
+(
+    volScalarFieldValue alpha.air           1
+    volScalarFieldValue alpha.water         0
+    volScalarFieldValue alpha.contactFluid  0
+
+    volScalarFieldValue h.air              -1045.2
+    volScalarFieldValue h.water             0
+    volScalarFieldValue h.contactFluid      0
+
+    volVectorFieldValue U (0 0 0)
+);
+
+regions
+(
+
+    sphereToCell
+    {
+        centre (-0.012 0 0);
+        radius 0.001;
+
+        fieldValues
+        (
+            volScalarFieldValue alpha.water         0
+            volScalarFieldValue alpha.air           0
+            volScalarFieldValue alpha.contactFluid  1
+
+            volScalarFieldValue h.water             0
+            volScalarFieldValue h.air               0
+            volScalarFieldValue h.contactFluid      -4.43e4 
+        );
+    }
+
+
+    sphereToCell
+    {
+        centre (0 0 0);
+        radius 0.002;
+
+        fieldValues
+        (
+            volScalarFieldValue alpha.water         1
+            volScalarFieldValue alpha.air           0
+            volScalarFieldValue alpha.contactFluid  0
+
+            volScalarFieldValue h.water             6300 // Tinitial = 1,5 °C
+            volScalarFieldValue h.air               0
+            volScalarFieldValue h.contactFluid      0
+        );
+    }
+    
+
+
+);
+
+
