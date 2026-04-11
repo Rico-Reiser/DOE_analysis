@@ -1,11 +1,11 @@
 #!/bin/bash
-#SBATCH --job-name=freeze_DOE
+#SBATCH --job-name=freeze_DOE_rheological
 #SBATCH --partition=haku
 #SBATCH --nodes=1
 #SBATCH --ntasks=4
 #SBATCH --cpus-per-task=1
 #SBATCH --array=1-27%12
-#SBATCH --time=30:00:00
+#SBATCH --time=40:00:00
 #SBATCH --output=/bigwork/nhkffrei/solver_and_case/DOE_3/logs/slurm-%A_%a.out
 #SBATCH --error=/bigwork/nhkffrei/solver_and_case/DOE_3/logs/slurm-%A_%a.err
 
@@ -28,23 +28,19 @@ date
 
 cd "$CASE_DIR" || { echo "Case not found"; exit 1; }
 
-# ==============================
+
 # Mesh
-# ==============================
 
 echo ">>> blockMesh"
 blockMesh > log.blockMesh 2>&1 || exit 1
 
-# ==============================
+
 # Initialisierung
-# ==============================
 
 echo ">>> setFields"
 setFields > log.setFields 2>&1 || exit 1
 
-# ==============================
 # Decomposition
-# ==============================
 
 echo ">>> decomposePar"
 rm -rf processor*
@@ -55,16 +51,14 @@ if [ ! -d "processor0" ]; then
     exit 1
 fi
 
-# ==============================
+
 # Solver
-# ==============================
 
 echo ">>> solver (parallel)"
 srun freezeFoam4 -parallel > log.run 2>&1
 
-# ==============================
+
 # Rekonstruktion
-# ==============================
 
 echo ">>> reconstruct"
 reconstructPar > log.reconstruct 2>&1 || exit 1
@@ -73,11 +67,10 @@ touch case.foam
 
 echo ">>> Simulation finished"
 
-# ==============================
-# OPTIONAL ZIP (SICHER)
-# ==============================
 
-cd "$BIGWORK/solver_and_case/DOE_2" || exit 1
+# ZIP 
+
+cd "$BIGWORK/solver_and_case/DOE_3" || exit 1
 
 ZIP_NAME="run${RUN_ID}.zip"
 

@@ -19,8 +19,44 @@ boundaryField
 
     top
     {
-        type zeroGradient;
-    }
+    type            codedFixedValue;
+    name            topH_air;
+    value           uniform 0;
+
+    code
+    #{
+        const fvPatch& patch = this->patch();
+        const fvMesh&  mesh  = patch.boundaryMesh().mesh();
+
+        scalarField& hPatch = *this;
+
+        const scalar Twall = 173.15;     // Wandtemperatur [K]
+
+        // solidificationProperties laden
+        IOdictionary solidProps
+        (
+            IOobject
+            (
+                "solidificationProperties",
+                "constant",
+                mesh,
+                IOobject::MUST_READ,
+                IOobject::NO_WRITE
+            )
+        );
+
+        const scalar Tref = readScalar(solidProps.lookup("Tref"));
+
+        // air properties lesen
+        const dictionary& airDict = solidProps.subDict("air");
+        const scalar cpAir = readScalar(airDict.lookup("cp"));
+
+        forAll(hPatch, faceI)
+        {
+            hPatch[faceI] = cpAir * (Twall - Tref);
+        }
+    #};
+}
 
     left
     {

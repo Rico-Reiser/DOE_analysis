@@ -13,7 +13,7 @@ startFrom       latestTime;
 startTime       0;
 
 stopAt          endTime;
-endTime         8;
+endTime         20;
 
 
 deltaT          1e-7;
