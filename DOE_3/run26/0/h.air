@@ -1,0 +1,43 @@
+FoamFile
+{
+    format      ascii;
+    class       volScalarField;
+    location    "0";
+    object      h.air;
+}
+
+dimensions      [0 2 -2 0 0 0 0];   // J/kg
+
+internalField   uniform 0;          // T = Tref
+
+boundaryField
+{
+    bottom
+    {
+        type zeroGradient;
+    }
+
+    top
+    {
+        type zeroGradient;
+    }
+
+    left
+    {
+        type            zeroGradient;
+    }
+    right
+    {
+        type            zeroGradient;  
+    }
+    front
+    {
+        type empty;
+    }
+
+    back
+    {
+        type empty;
+    }
+
+}

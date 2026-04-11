@@ -1,0 +1,6 @@
+# dynamicCode:
+# SHA1 = 689275963b59a9aa776624cb96a9e06bc2415f6d
+
+SOURCE += codedFixedValueFvPatchFieldTemplate.C
+
+LIB = $(PWD)/../platforms/$(WM_OPTIONS)/lib/libinletPulse_689275963b59a9aa776624cb96a9e06bc2415f6d

@@ -1,0 +1,6 @@
+# dynamicCode:
+# SHA1 = 425fcabe01515790274bbe6cd24abd89eebd979e
+
+SOURCE += codedFixedValueFvPatchFieldTemplate.C
+
+LIB = $(PWD)/../platforms/$(WM_OPTIONS)/lib/libbottomH_water_425fcabe01515790274bbe6cd24abd89eebd979e

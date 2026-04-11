@@ -1,0 +1,44 @@
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      transportProperties;
+}
+
+phases (water air contactFluid);
+
+// Water
+water
+{
+    transportModel  Newtonian;
+
+    rho             1100;
+    nu              1.81e-5;
+}
+
+// Air
+air
+{
+    transportModel  Newtonian;
+    nu              1.5e-5;
+    rho             1.2;
+}
+
+contactFluid
+{
+    transportModel  Newtonian;
+
+    rho             1600;
+
+    
+    nu              2.812500e-05;
+}
+
+
+
+
+// Surface tension
+// sigma            0.072;
+// sigma            0.03;
