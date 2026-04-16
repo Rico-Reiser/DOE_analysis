@@ -14,7 +14,7 @@ phases (water contactFluid air);
 sigmas
 (
     // Vgl.: theta(water-substrat)=80°
-    (water contactFluid)  0.014        // (-1)
+    (water contactFluid)  0.0335275        // (-1)
     (water air)          0.072
     (contactFluid air)   0.03
 );

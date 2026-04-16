@@ -30,10 +30,10 @@ contactFluid
 {
     transportModel  Newtonian;
 
-    rho             1767;
+    rho             1800;
 
     
-    nu              1.822252e-05;
+    nu              1.8180888889e-05;
 }
 
 
