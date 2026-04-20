@@ -25,23 +25,23 @@ for i in $(seq 2 11); do
     lambdaCF=0.5
 
     # ==============================
-    # 🔥 DOE (nur cp & lambda)
+    # update cp and lambda
     # ==============================
     case $i in
-        2)  lambdaCF=0.2; cpCF=2000 ;;
-        3)  lambdaCF=0.2; cpCF=1000 ;;
-        4)  lambdaCF=0.5; cpCF=1500 ;;
-        5)  lambdaCF=0.5; cpCF=1000 ;;
-        6)  lambdaCF=0.8; cpCF=1500 ;;
-        7)  lambdaCF=0.8; cpCF=2000 ;;
-        8)  lambdaCF=0.2; cpCF=1500 ;;
-        9)  lambdaCF=0.5; cpCF=2000 ;;
-        10) lambdaCF=0.5; cpCF=1500 ;;
-        11) lambdaCF=0.8; cpCF=1000 ;;
+        1)  lambdaCF=0.55; cpCF=1000 ;;
+        2)  lambdaCF=1.0; cpCF=2000 ;;
+        3)  lambdaCF=0.55; cpCF=2000 ;;
+        4)  lambdaCF=0.1; cpCF=1500 ;;
+        5)  lambdaCF=0.1; cpCF=2000 ;;
+        6)  lambdaCF=0.1; cpCF=1000 ;;
+        7)  lambdaCF=0.55; cpCF=1500 ;;
+        8)  lambdaCF=1.0; cpCF=1500 ;;
+        9) lambdaCF=0.55; cpCF=1500 ;;
+        10) lambdaCF=1.0; cpCF=1000 ;;
     esac
 
     # ==============================
-    # 🔥 ENTHALPIE (aus cp)
+    # enthalpy 
     # ==============================
     hCF=$(echo "-100 * $cpCF" | bc)
 
