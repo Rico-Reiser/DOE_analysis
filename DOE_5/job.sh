@@ -4,10 +4,10 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=4
 #SBATCH --cpus-per-task=1
-#SBATCH --array=1-10%10
+#SBATCH --array=1-12%12
 #SBATCH --time=40:00:00
-#SBATCH --output=/bigwork/nhkffrei/solver_and_case/DOE_4/logs/slurm-%A_%a.out
-#SBATCH --error=/bigwork/nhkffrei/solver_and_case/DOE_4/logs/slurm-%A_%a.err
+#SBATCH --output=/bigwork/nhkffrei/solver_and_case/DOE_5/logs/slurm-%A_%a.out
+#SBATCH --error=/bigwork/nhkffrei/solver_and_case/DOE_5/logs/slurm-%A_%a.err
 
 set -e
 
@@ -18,7 +18,7 @@ module load OpenFOAM/10
 source $WM_PROJECT_DIR/etc/bashrc
 
 RUN_ID=$SLURM_ARRAY_TASK_ID
-CASE_DIR=$BIGWORK/solver_and_case/DOE_4/run${RUN_ID}
+CASE_DIR=$BIGWORK/solver_and_case/DOE_5/run${RUN_ID}
 
 echo "JOB: $SLURM_JOB_ID"
 echo "RUN: $RUN_ID"
@@ -70,7 +70,7 @@ echo ">>> Simulation finished"
 
 # ZIP 
 
-cd "$BIGWORK/solver_and_case/DOE_4" || exit 1
+cd "$BIGWORK/solver_and_case/DOE_5" || exit 1
 
 ZIP_NAME="run${RUN_ID}.zip"
 

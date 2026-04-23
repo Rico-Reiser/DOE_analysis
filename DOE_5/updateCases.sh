@@ -3,7 +3,7 @@
 # =========================================
 # BASISPFAD (WSL)
 # =========================================
-BASE=/home/rico-reiser/DOE/DOE_4
+BASE=/home/rico-reiser/DOE/DOE_5
 
 # =========================================
 # KONSTANTE (BLEIBEN FIX)
@@ -14,7 +14,7 @@ sigmaWC=0.05
 
 # =========================================
 
-for i in $(seq 2 11); do
+for i in $(seq 1 10); do
     d="$BASE/run$i"
     echo ">>> updating run$i"
 

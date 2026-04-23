@@ -29,8 +29,8 @@ water
 contactFluid
 {
     rho           1400;                   // [kg/m^3]    
-    cp            1250;
-    lambda        0.5;
+    cp            1500;
+    lambda        0.1;
 }
 
 air

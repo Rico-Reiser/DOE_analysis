@@ -33,7 +33,7 @@ regions
             volScalarFieldValue alpha.water         0
             volScalarFieldValue alpha.air           0
 
-            volScalarFieldValue h.contactFluid      -125000    //T = 173,15 K
+            volScalarFieldValue h.contactFluid      -200000    //T = 173,15 K
             volScalarFieldValue h.air               0
             volScalarFieldValue h.water             0
         );
@@ -67,7 +67,7 @@ regions
             volScalarFieldValue alpha.contactFluid  1
             volScalarFieldValue alpha.air           0
 
-            volScalarFieldValue h.contactFluid      -125000         //T = 173,15 K
+            volScalarFieldValue h.contactFluid      -200000         //T = 173,15 K
             volScalarFieldValue h.air               0
             volScalarFieldValue h.water             0
         );
