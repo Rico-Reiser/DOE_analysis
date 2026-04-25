@@ -1,0 +1,189 @@
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      snappyHexMeshDict;
+}
+
+// * * * * * * * * * * * * * * * * * * * * //
+
+castellatedMesh true;
+snap            true;
+addLayers       true;
+
+// ---------------------------------------
+// GEOMETRY
+// ---------------------------------------
+
+geometry
+{
+    walls
+    {
+        type triSurfaceMesh;
+        file "walls.stl";
+    }
+    inlet
+    {
+        type triSurfaceMesh;
+        file "inlet.stl";
+    }
+    outlet
+    {
+        type triSurfaceMesh;
+        file "outlet.stl";
+    }
+    bottom
+    {
+        type triSurfaceMesh;
+        file "bottom.stl";
+    }
+    top
+    {
+        type triSurfaceMesh;
+        file "top.stl";
+    }
+
+
+}
+
+// ---------------------------------------
+// CASTELLATED MESH
+// ---------------------------------------
+
+castellatedMeshControls
+{
+    maxLocalCells        5000;
+    maxGlobalCells       10000;
+    minRefinementCells   0;
+    maxLoadUnbalance     0.10;
+    nCellsBetweenLevels  3;
+
+    // Features momentan deaktiviert
+    features ();
+
+    resolveFeatureAngle 30;
+
+    refinementSurfaces
+    {
+        walls
+        {
+            level (1 1);
+        }
+        inlet
+        {
+            level (1 1);
+        }
+        outlet
+        {
+            level (1 1);
+        }
+        top
+        {
+            level (1 1);
+        }
+        bottom
+        {
+            level (1 1);
+        }
+
+    }
+    refinementRegions
+    {
+
+
+        
+    }
+
+    // *** WICHTIG: Inside-Point MUSS HIER DRIN SEIN ***
+    locationInMesh (0 0.005 0.005);
+
+    allowFreeStandingZoneFaces true;
+}
+
+// ---------------------------------------
+// SNAP
+// ---------------------------------------
+
+snapControls
+{
+    nSmoothPatch         5;
+    tolerance            1.0;
+    nSolveIter           30;
+    nRelaxIter           5;
+    nFeatureSnapIter     10;
+
+    implicitFeatureSnap true;
+    explicitFeatureSnap true;
+    multiRegionFeatureSnap true;
+}
+
+// ---------------------------------------
+// LAYER ADDITION
+// ---------------------------------------
+
+addLayersControls
+{
+    relativeSizes true;
+
+    expansionRatio 1.2;
+    firstLayerThickness 0.002;
+    minThickness 0.001;
+
+    layers
+    {
+        walls
+        {
+            nSurfaceLayers 2;
+        }
+    }
+
+    nGrow 0;
+
+    featureAngle 359;
+    maxFaceThicknessRatio 0.5;
+    nSmoothSurfaceNormals 2;
+    nSmoothThickness 10;
+    minMedialAxisAngle 90;
+    minMedianAxisAngle 90;
+    maxThicknessToMedialRatio 0.3;
+    nSmoothNormals 3;
+    slipFeatureAngle 80;
+    nRelaxIter 5;
+    nBufferCellsNoExtrude 0;
+    nLayerIter 10;
+    nRelaxedIter 10;
+}
+
+// ---------------------------------------
+
+meshQualityControls
+{
+    maxNonOrtho        65;
+    maxBoundarySkewness 20;
+    maxInternalSkewness 4;
+    maxConcave          80;
+    minVol              1e-13;
+    minTetQuality       1e-9;
+    minArea             -1;
+    minTwist            0.02;
+    minDeterminant      0.001;
+    minFaceWeight       0.02;
+    minVolRatio         0.01;
+    minTriangleTwist    -1;
+
+    nSmoothScale        4;
+    errorReduction      0.75;
+}
+
+writeFlags
+(
+    scalarLevels
+    layerSets
+    layerFields
+);
+
+mergeTolerance 1e-6;
+
+// ************************************************************************* //
